@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choix d'inscription</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 30vh;
+            margin: 0;
+            background-color: #ebeaeacc;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            width: 400%;  /* Utiliser toute la largeur disponible */
+            max-width: 90%;  /* Vous pouvez ajuster cette valeur pour contrôler la largeur maximale */
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            width: 50%;  /* Chaque carte prend 50% de la largeur de son parent */
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        button {
+            background-color: #ff538d;
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 80%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e60073;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+        <div class="card-container">
+            <div class="card">
+                <h2>Je suis un parent</h2>
+                <button onclick="window.location.href='/register/parent/'">S'inscrire en tant que parent</button>
+            </div>
+            <div class="card">
+                <h2>Je suis un babysitter</h2>
+                <button onclick="window.location.href='/register/babysitter/'">S'inscrire en tant que babysitter</button>
+            </div>
+        </div>
+   
+</body>
+</html>

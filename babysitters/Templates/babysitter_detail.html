@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil de {{ babysitter.first_name }} {{ babysitter.last_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f3f3f3;
+            color: #333;
+        }
+
+        .profile-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #FF1493;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+
+        .profile-photo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-photo img {
+            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border: 4px solid #FF1493;
+        }
+
+        .profile-details {
+            margin-top: 30px;
+        }
+
+        .profile-details h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #FF1493;
+            padding-bottom: 10px;
+        }
+
+        .profile-details p {
+            font-size: 18px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .profile-details .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item strong {
+            font-size: 20px;
+            color: #FF1493;
+        }
+
+        .info-item span {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .profile-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .profile-actions button {
+            background-color: #FF1493;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-actions button:hover {
+            background-color: #FF69B4;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 20px;
+            }
+
+            .profile-photo img {
+                width: 150px;
+                height: 150px;
+            }
+
+            .profile-details h2 {
+                font-size: 24px;
+            }
+
+            .profile-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <div class="profile-photo">
+            {% load static %}
+            <img src="{% if babysitter.photo %}{{ babysitter.photo.url }}{% else %}{% static 'babysitter_photos/avatar.jpg' %}{% endif %}" alt="Photo de {{ babysitter.first_name }}">
+        </div>
+        
+        <h1>{{ babysitter.first_name }} {{ babysitter.last_name }}</h1>
+
+        <div class="profile-details">
+            <h2>Détails du Profil</h2>
+
+            <!-- Informations détaillées -->
+            <div class="info-item">
+                <div><strong>Disponibilité</strong></div>
+                <div><span>{{ babysitter.availability }}</span></div>
+            </div>
+
+            <div class="info-item">
+                <div><strong>Localisation</strong></div>
+                <div><span>{{ babysitter.address }}</span></div>
+            </div>
+
+            <div class="info-item">
+                <div><strong>Expérience</strong></div>
+                <div><span>{{ babysitter.experience_years }} ans</span></div>
+            </div>
+
+            <div class="info-item">
+                <div><strong>Tarif Horaire</strong></div>
+                <div><span>{{ babysitter.hourly_rate }} Dt</span></div>
+            </div>
+
+            <div class="info-item">
+                <div><strong>Langues Parlées</strong></div>
+                <div><span>{{ babysitter.languages_spoken }}</span></div>
+            </div>
+
+            <div class="info-item">
+                <div><strong>Bio</strong></div>
+                <div><span>{{ babysitter.bio }}</span></div>
+            </div>
+            <div class="info-item">
+                <div><strong>certification</strong></div>
+                <div><span>{{ babysitter.certifications }}</span></div>
+            </div>
+            <div class="info-item">
+                <div><strong>Numéro de Téléphone</strong></div>
+                <div><span>{{ babysitter.phone}}</span></div>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <form action="{% url 'create_reservation_for' babysitter.id %}" method="GET">
+                <button type="submit">Réserver ce Babysitter</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Réservations</title>
+    <style>
+        /* Corps général */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #FF69B4; /* Rose */
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            border-left: 4px solid #FF69B4; /* Rose */
+            padding-left: 10px;
+        }
+
+        /* Table design */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        table th {
+            background-color: #FF69B4; /* Rose */
+            color: white;
+            border: none;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #fce4ec; /* Rose très clair */
+        }
+
+        table tr:hover {
+            background-color: #ffe5f1; /* Rose pastel doux */
+        }
+
+        table td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Statut */
+        .status {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .status.pending {
+            background-color: #FFEB3B; /* Rose */
+            color: white;
+        }
+
+        .status.confirmed {
+            background-color: #4CAF50; /* Vert */
+            color: white;
+        }
+
+        .status.cancelled {
+            background-color: red; /* Rouge doux */
+            color: white;
+        }
+
+        /* Messages vides */
+        .empty {
+            text-align: center;
+            font-size: 1rem;
+            color: #888;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mes Réservations</h1>
+
+        <!-- Réservations Futures -->
+        <div class="section">
+            <h2>Réservations Futures</h2>
+            {% if reservations_futures %}
+                <table>
+                    <thead>
+                        <tr>
+                           
+                            <th>Date</th>
+                            <th>Heure de début</th>
+                            <th>Durée</th>
+                            <th>Babysitter</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations_futures %}
+                            <tr>
+                                
+                                <td>{{ reservation.date|date:"d/m/Y" }}</td>
+                                <td>{{ reservation.start_time|time:"H:i" }}</td>
+                                <td>{{ reservation.duration }} minutes</td>
+                                <td>{{ reservation.babysitter.first_name }} {{ reservation.babysitter.last_name }}</td>
+                                <td><span class="status {{ reservation.status }}">{{ reservation.get_status_display }}</span></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="empty">Aucune réservation future.</p>
+            {% endif %}
+        </div>
+
+        <!-- Réservations Passées -->
+        <div class="section">
+            <h2>Réservations Passées</h2>
+            {% if reservations_passees %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Heure de début</th>
+                            <th>Durée</th>
+                            <th>Babysitter</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations_passees %}
+                            <tr>
+                                <td>{{ reservation.date|date:"d/m/Y" }}</td>
+                                <td>{{ reservation.start_time|time:"H:i" }}</td>
+                                <td>{{ reservation.duration }} minutes</td>
+                                <td>{{ reservation.babysitter.first_name }} {{ reservation.babysitter.last_name }}</td>
+                                <td><span class="status {{ reservation.status }}">{{ reservation.get_status_display }}</span></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="empty">Aucune réservation passée.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

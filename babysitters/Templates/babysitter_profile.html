@@ -1,0 +1,21 @@
+<h2>Profil Babysitter</h2>
+<p><strong>Nom :</strong> {{ babysitter.first_name }} {{ babysitter.last_name }}</p>
+<p><strong>Email :</strong> {{ babysitter.email }}</p>
+<p><strong>Téléphone :</strong> {{ babysitter.phone }}</p>
+<p><strong>Adresse :</strong> {{ babysitter.address }}</p>
+<p><strong>Ville :</strong> {{ babysitter.city }}</p>
+<p><strong>Années d'expérience :</strong> {{ babysitter.experience_years }}</p>
+<p><strong>Tarif horaire :</strong> {{ babysitter.hourly_rate }}Dt</p>
+<p><strong>Langues parlées :</strong> {{ babysitter.languages_spoken }}</p>
+<p><strong>Bio :</strong> {{ babysitter.bio }}</p>
+<img src="{{ babysitter.photo.url }}" alt="Photo de profil" style="width:150px; height:150px;">
+<a href="{% url 'update_babysitter_profile' %}">Modifier le profil</a>
+
+<h3>Évaluations de {{ babysitter.first_name }} {{ babysitter.last_name }}</h3>
+<p>Note moyenne : {{ average_rating|floatformat:1 }}</p>
+<ul>
+  {% for avis in avis %}
+    <li>{{ avis.commentaire }} - Note : {{ avis.note }} étoiles</li>
+  {% endfor %}
+</ul>
+

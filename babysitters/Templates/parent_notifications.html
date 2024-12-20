@@ -1,0 +1,27 @@
+<!-- parent_notifications.html -->
+{% extends 'side_bare_parent.html' %}
+
+{% block content %}
+<div class="notifications-container">
+    <h2>Notifications</h2>
+    
+    {% if unread_notification_count > 0 %}
+    <p>Vous avez {{ unread_notification_count }} nouvelles notifications.</p>
+    {% else %}
+    <p>Aucune notification non lue.</p>
+    {% endif %}
+
+    <ul>
+        {% for notification in parent.user.notifications.filter(is_read=False) %}
+        <li>
+            <div class="notification">
+                <p>{{ notification.message }}</p>
+                <small>Reçu le : {{ notification.created_at|date:"d M Y H:i" }}</small>
+            </div>
+        </li>
+        {% empty %}
+        <li><p>Aucune notification.</p></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'side_bare_parent.html' %}
+
+{% block content %}
+  <h2>Laisser un avis pour {{ reservation.babysitter.first_name }} {{ reservation.babysitter.last_name }}</h2>
+
+  <form method="POST">
+    {% csrf_token %}
+    
+    <label for="note">Note (1 à 5) :</label>
+    <select name="note" required>
+      <option value="1">1 étoile</option>
+      <option value="2">2 étoiles</option>
+      <option value="3">3 étoiles</option>
+      <option value="4">4 étoiles</option>
+      <option value="5">5 étoiles</option>
+    </select>
+
+    <label for="commentaire">Commentaire :</label>
+    <textarea name="commentaire" required></textarea>
+
+    <button type="submit">Soumettre l'avis</button>
+  </form>
+{% endblock %}

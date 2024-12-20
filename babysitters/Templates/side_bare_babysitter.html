@@ -1,0 +1,105 @@
+<!-- sidebar_babysitter.html -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>Tableau de bord</h2>
+    </div>
+    <ul class="sidebar-menu">
+        <!-- Profil du babysitter -->
+        <li>
+            <a href="{% url 'babysitter_dashboard' %}">
+                <i class="fa fa-home"></i> Tableau de bord
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'babysitter_profile' %}">
+                <i class="fa fa-user"></i> Mon profil
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'update_babysitter_profile' %}">
+                <i class="fa fa-edit"></i> Mettre à jour mon profil
+            </a>
+        </li>
+
+        <!-- Réservations -->
+        <li>
+            <a href="#">
+                <i class="fa fa-calendar"></i> Mes réservations
+            </a>
+        </li>
+
+        <!-- Notifications -->
+        <li>
+            <a href="#">
+                <i class="fa fa-bell"></i> Notifications
+                <!-- Indicateur rouge pour les notifications non vues -->
+              
+                    <span class="badge"></span>
+                
+            </a>
+        </li>
+
+        <!-- Déconnexion -->
+        <li>
+            <a href="{% url 'logout' %}">
+                <i class="fa fa-sign-out"></i> Déconnexion
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Ajoutez du style pour le badge de notifications -->
+<style>
+    .sidebar {
+        background-color: #f8f9fa;
+        padding: 20px;
+        width: 250px;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        overflow-y: auto;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-header {
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 15px;
+    }
+
+    .sidebar-menu li a {
+        display: flex;
+        align-items: center;
+        color: #333;
+        text-decoration: none;
+        font-size: 1.1em;
+    }
+
+    .sidebar-menu li a i {
+        margin-right: 10px;
+    }
+
+    .badge {
+        background-color: red;
+        color: white;
+        border-radius: 50%;
+        padding: 5px 10px;
+        font-size: 0.8em;
+        margin-left: auto;
+    }
+
+    .sidebar-menu li a:hover {
+        color: #007bff;
+    }
+</style>

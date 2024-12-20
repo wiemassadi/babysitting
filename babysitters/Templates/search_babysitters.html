@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Babysitters</title>
+    <style>
+        /* Mise en page générale */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFF0F5; /* Rose clair pour une ambiance douce */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #ff538d; /* Rose vif */
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 36px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Conteneur principal */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Formulaire de recherche */
+        form {
+            background-color: #ffffff;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 200%;
+            
+            max-width: 600px; /* Augmenter la largeur du formulaire */
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        form:hover {
+            transform: scale(1.02);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            color: #ff538d; /* Rose vif */
+        }
+
+        select, input[type="text"], button {
+            width: 100%;
+            padding: 18px; /* Augmenter la taille des champs de saisie */
+            margin-bottom: 20px;
+            border: 1px solid #ff538d;
+            border-radius: 8px;
+            font-size: 18px; /* Augmenter la taille du texte */
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        select:focus, input[type="text"]:focus, button:focus {
+            outline: none;
+            border-color: #ff538d;
+        }
+
+        button {
+            background-color: #FF1493; /* Rose vif pour le bouton */
+            color: white;
+            font-size: 20px; /* Augmenter la taille du texte du bouton */
+            cursor: pointer;
+            border: none;
+            padding: 18px; /* Augmenter la taille du bouton */
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #FF69B4; /* Rose clair au survol */
+        }
+
+        /* Liste des babysitters */
+        .babysitter-list {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+            max-width: 700px;
+            margin-top: 20px;
+            box-sizing: border-box;
+        }
+
+        .babysitter-item {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .babysitter-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .babysitter-item strong {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .babysitter-item a {
+            color: #ff538d; /* Rose vif */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .babysitter-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .pagination button {
+            background-color: #FF1493;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 8px;
+            font-size: 16px;
+        }
+
+        .pagination button:hover {
+            background-color: #FF69B4;
+        }
+
+        /* Styles responsives */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            form {
+                padding: 20px;
+            }
+
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+
+            .babysitter-list {
+                max-width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Formulaire de recherche à gauche -->
+        <div class="form-container">
+            <h1>Rechercher un Babysitter</h1>
+            <form method="GET">
+                <label for="availability">Disponibilité:</label>
+                <select name="availability" id="availability">
+                    <option value="">-- Choisir --</option>
+                    <option value="full_time" {% if availability_filter == 'full_time' %}selected{% endif %}>full_time</option>
+                    <option value="part_time" {% if availability_filter == 'part_time' %}selected{% endif %}>part_time</option>
+                    <option value="occasional" {% if availability_filter == 'occasional' %}selected{% endif %}>occasional</option>
+                </select>
+
+                <label for="location">Localisation:</label>
+                <input type="text" name="location" id="location" value="{{ location_filter }}" placeholder="Entrez une localisation">
+
+                <button type="submit">Rechercher</button>
+            </form>
+        </div>
+
+        <!-- Résultats de la recherche à droite -->
+        <div class="results-container">
+            <h2>Résultats de la recherche</h2>
+
+            {% if babysitters %}
+            <ul class="babysitter-list">
+                {% for babysitter in babysitters %}
+                    <li class="babysitter-item" style="display: flex; justify-content: space-between; align-items: center;">
+                        <!-- Informations sur le babysitter à gauche -->
+                        <div>
+                            <strong>{{ babysitter.first_name }} {{ babysitter.last_name }}</strong><br>
+                            Disponibilité : {{ babysitter.availability }}<br>
+                            Localisation : {{ babysitter.address }}<br>
+                            <a href="{% url 'babysitter_detail' babysitter.id %}">Voir le profil</a>
+
+
+                        </div>
+                       
+                        <!-- Photo du babysitter à droite -->
+                        <div>
+                            {% load static %}
+                            <img src="{% if babysitter.photo %}{{ babysitter.photo.url }}{% else %}{% static 'babysitter_photos/avatar.jpg' %}{% endif %}" 
+                            alt="Photo de {{ babysitter.first_name }}" 
+                            width="70" height="70" 
+                            style="border-radius: 8px; object-fit: cover;">
+                       
+
+                        </div>
+                        <div>
+                           
+                        <div>
+                            <form id="cancel-form" action="{% url 'cancel_reservation' babysitter.id %}" method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: red; color: white; padding: 5px 10px; border: none; border-radius: 5px;" class="btn btn-danger" data-toggle="modal" data-target="#confirmCancelModal">Annuler</button>
+                            </form>
+                        </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            
+            
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    {% if has_previous %}
+                        <button onclick="window.location.href='?page={{ previous_page_number }}&availability={{ availability_filter }}&location={{ location_filter }}'">Précédent</button>
+                    {% endif %}
+                    {% if has_next %}
+                        <button onclick="window.location.href='?page={{ next_page_number }}&availability={{ availability_filter }}&location={{ location_filter }}'">Suivant</button>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>Aucun babysitter trouvé selon vos critères.</p>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'parent_dashboard' %}" >
+        <button>dashboard</button>
+    </a>
+</body>
+</html>

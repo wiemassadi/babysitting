@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier le Profil Babysitter</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8e1f4; /* Fond rose doux */
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #d81b60; /* Rose vif */
+            font-size: 2.5em;
+            margin-top: 50px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Photo de Profil */
+        .profile-photo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-photo {
+            display: block;
+            margin: 0 auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #d81b60; /* Bordure rose autour de la photo */
+        }
+
+        /* Formulaire */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin: 15px 0 5px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        input, textarea {
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #f06292; /* Rose pâle */
+            border-radius: 8px;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            padding: 5px;
+        }
+
+        button {
+            background-color: #d81b60; /* Rose vif */
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #f06292; /* Rose plus clair */
+            transform: scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 2em;
+            }
+
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+
+            input, textarea, button {
+                font-size: 1em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Profil {{ babysitter.first_name }} {{babysitter.last_name }} </h2>
+    <div class="container">
+        <!-- Photo de Profil -->
+        <div class="profile-photo-container">
+            <img src="{{ babysitter.photo.url }}" alt="Photo de Profil" class="profile-photo">
+            <label>Modifier la photo de profil :</label>
+            <input type="file" name="photo" accept="image/*">
+        </div>
+
+        <!-- Formulaire de mise à jour du profil -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>Prénom :</label>
+            <input type="text" name="first_name" value="{{ babysitter.first_name }}" required>
+
+            <label>Nom :</label>
+            <input type="text" name="last_name" value="{{ babysitter.last_name }}" required>
+
+            <label>Téléphone :</label>
+            <input type="text" name="phone" value="{{ babysitter.phone }}" required>
+
+            <label>Adresse :</label>
+            <input type="text" name="address" value="{{ babysitter.address }}" required>
+
+            <label>Ville :</label>
+            <input type="text" name="city" value="{{ babysitter.city }}" required>
+
+            <label>Années d'expérience :</label>
+            <input type="number" name="experience_years" value="{{ babysitter.experience_years }}" required>
+
+            <label>Tarif horaire :</label>
+            <input type="number" step="0.01" name="hourly_rate" value="{{ babysitter.hourly_rate }}" required>
+
+            <label>Langues parlées :</label>
+            <input type="text" name="languages_spoken" value="{{ babysitter.languages_spoken }}" required>
+
+            <label>Bio :</label>
+            <textarea name="bio" rows="4" required>{{ babysitter.bio }}</textarea>
+           
+
+            <button type="submit">Update_Profile</button>
+        </form>
+    </div>
+</body>
+</html>

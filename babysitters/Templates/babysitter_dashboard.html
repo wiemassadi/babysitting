@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Babysitting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #FF1493;
+            color: white;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 30%;
+            text-align: center;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .card button {
+            background-color: #FF1493;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .card button:hover {
+            background-color: #FF69B4;
+        }
+
+        .profile-details {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .profile-details h4 {
+            margin: 20px 0;
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .profile-actions button {
+            margin: 0 10px;
+            background-color: #FF1493;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-actions button:hover {
+            background-color: #FF69B4;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .card {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+          
+            <h1>Bonjour, {{ babysitter.first_name }} {{ babysitter.last_name }}</h1>
+        </div>
+
+        <!-- Dashboard for Parent or Babysitter -->
+        <div class="dashboard">
+           
+            {% include "side_bare_babysitter.html" %}
+
+            <!-- For Babysitter -->
+            <div class="card">
+                <h3>Gestion des Réservations</h3>
+                <p>Acceptez ou refusez les demandes de réservation.</p>
+                <a href="{% url 'voir_reservations_babysitter' user.babysitter.id %}">
+                    <button>Voir les Réservations</button>
+                </a>
+            </div>
+
+            <!-- For All Users -->
+            <div class="card">
+                <h3>Profile</h3>
+                <p>Accédez à vos informations personnelles.</p>
+                <a href="{%url 'update_babysitter_profile'%}">
+                    <button >Profil</button>
+                </a>
+            </div>
+        </div>
+
+        <!-- Profile Details (Dynamically change content based on user role) -->
+        <div class="profile-details">
+           
+            <div class="profile-actions">
+                
+                
+                <a href="{% url 'login' %}">
+                    <button >Se Déconnecter</button>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Custom JavaScript for additional functionality (e.g., handling form submissions, notifications)
+    </script>
+
+</body>
+</html>

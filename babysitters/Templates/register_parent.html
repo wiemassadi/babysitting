@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Parent</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom right, #ff966d, #fa538d, #89379c);
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff538d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #e60073;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        /* Styles pour les messages */
+        .alert-container {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .alert.error {
+            background-color: #ff4d4f; /* Rouge pour les erreurs */
+        }
+
+        .alert.success {
+            background-color: #52c41a; /* Vert pour les succès */
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Inscription en tant que Parent</h1>
+
+        <!-- Affichage des messages -->
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Étape 1 -->
+            <div class="form-step active">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Votre Email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="password" placeholder="Votre Mot de passe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password_confirm">Confirmer le mot de passe</label>
+                    <input type="password" name="password_confirm" id="password_confirm" placeholder="Confirmer le Mot de passe" required>
+                </div>
+            </div>
+
+            <!-- Étape 2 -->
+            <div class="form-step">
+                <div class="form-group">
+                    <label for="first_name">Prénom</label>
+                    <input type="text" name="first_name" id="first_name" placeholder="Votre Prénom" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Nom</label>
+                    <input type="text" name="last_name" id="last_name" placeholder="Votre Nom" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Téléphone</label>
+                    <input type="text" name="phone" id="phone" placeholder="Votre Numéro de téléphone" required>
+                </div>
+            </div>
+
+            <!-- Étape 3 -->
+            <div class="form-step">
+                <div class="form-group">
+                    <label for="address">Adresse</label>
+                    <input type="text" name="address" id="address" placeholder="Votre Adresse" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="number_of_children">Nombre d'enfants</label>
+                    <input type="number" name="number_of_children" id="number_of_children" placeholder="Nombre d'enfants" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="children_ages">Âges des enfants</label>
+                    <input type="text" name="children_ages" id="children_ages" placeholder="Âges des enfants (séparés par des virgules)" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" placeholder="Décrivez-vous brièvement" required></textarea>
+                </div>
+            </div>
+
+            <!-- Boutons de navigation -->
+            <div class="btn-group">
+                <button type="button" class="btn" id="prevBtn" onclick="prevStep()">Précédent</button>
+                <button type="button" class="btn" id="nextBtn" onclick="nextStep()">Suivant</button>
+            </div>
+
+            <!-- Bouton de soumission (caché sauf à la dernière étape) -->
+            <button type="submit" class="btn" id="submitBtn" style="display: none;">S'inscrire</button>
+        </form>
+
+        <div class="form-footer">
+            <p>Vous avez déjà un compte ? <a href="/login/">Se connecter</a></p>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll('.form-step');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showStep(step) {
+            steps.forEach((el, index) => {
+                el.classList.toggle('active', index === step);
+            });
+            prevBtn.style.display = step > 0 ? 'inline-block' : 'none';
+            nextBtn.style.display = step < steps.length - 1 ? 'inline-block' : 'none';
+            submitBtn.style.display = step === steps.length - 1 ? 'inline-block' : 'none';
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        // Initial display
+        showStep(currentStep);
+    </script>
+</body>
+</html>
