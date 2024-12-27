@@ -1,3 +1,4 @@
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,13 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Styles généraux */
-       
-
-
-        
-        /* Conteneur des notifications */
         .notifications-container {
-            margin-left: 280px; /* Espace pour la barre latérale */
+            margin-left: 270px; /* Espace pour la barre latérale */
             padding: 20px;
             background-color: #fff;
             height: 100vh;
@@ -27,7 +23,6 @@
             margin-bottom: 20px;
         }
 
-        /* Liste des notifications */
         .notifications-list {
             list-style: none;
             padding: 0;
@@ -44,13 +39,17 @@
             justify-content: space-between;
             gap: 15px;
             align-items: center;
-            transition: background-color 0.3s ease;
         }
-      
+
+        .notification-item:hover {
+            background-color: #f1f1f1;
+        }
+
         .notification-item.unread {
             background-color: #5aacf5;
             border-left: 5px solid #007bff;
         }
+
         .notification-icon {
             font-size: 1.5em;
             color: #007bff;
@@ -72,6 +71,13 @@
             color: #333;
         }
 
+        .view-details {
+            color: #007bff;
+            font-size: 1.1em;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
         .no-notifications {
             font-size: 1.2em;
             color: #999;
@@ -81,22 +87,22 @@
     </style>
 </head>
 <body>
-    {% include "side_bare_parent.html" %}
-
-    <!-- Conteneur principal -->
+    {% include "side_bare_babysitter.html" %}
     <div class="notifications-container">
         <h2>Mes Notifications</h2>
         <ul class="notifications-list">
-            <!-- Exemple de notifications dynamiques -->
             {% for notification in notifications %}
                 <li class="notification-item {% if not notification.read %}unread{% endif %}">
-                    <a href="{% url 'mark_notification_as_read' notification.id %}" style="display: flex; text-decoration: none; width: 100%; align-items: center; gap: 10px;">
+                    <a href="{% url 'mark_notification_as_read' notification.id %}">
                         <i class="fas fa-bell notification-icon"></i>
                         <div class="notification-content">
                             <div class="notification-time">{{ notification.created_at|date:"d/m/Y H:i" }}</div>
                             <div class="notification-message">{{ notification.message }}</div>
+                            
+                            
                         </div>
                     </a>
+                    
                 </li>
             {% empty %}
                 <li class="no-notifications">Aucune notification disponible.</li>
@@ -105,3 +111,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

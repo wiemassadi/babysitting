@@ -38,13 +38,14 @@
         /* Conteneur principal */
         .container {
             width: 100%;
-            max-width: 1200px;
+            height: 70%;
+            margin-left: 70px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             flex-wrap: wrap;
             gap: 20px;
-            padding: 20px;
+            padding: 2px;
             box-sizing: border-box;
         }
 
@@ -54,10 +55,10 @@
             padding: 50px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 200%;
+            width: 90%;
             
             max-width: 600px; /* Augmenter la largeur du formulaire */
-            margin-bottom: 10px;
+            margin-left: 100px;
             box-sizing: border-box;
         }
 
@@ -107,9 +108,9 @@
         .babysitter-list {
             list-style-type: none;
             padding: 0;
-            width: 100%;
+            width: 50%;
             max-width: 700px;
-            margin-top: 20px;
+            margin-top: 2px;
             box-sizing: border-box;
         }
 
@@ -192,6 +193,7 @@
     </style>
 </head>
 <body>
+    {% include "side_bare_parent.html" %}
     <div class="container">
         <!-- Formulaire de recherche à gauche -->
         <div class="form-container">
@@ -202,7 +204,7 @@
                     <option value="">-- Choisir --</option>
                     <option value="full_time" {% if availability_filter == 'full_time' %}selected{% endif %}>full_time</option>
                     <option value="part_time" {% if availability_filter == 'part_time' %}selected{% endif %}>part_time</option>
-                    <option value="occasional" {% if availability_filter == 'occasional' %}selected{% endif %}>occasional</option>
+                    <option value="weekends" {% if availability_filter == 'weekends' %}selected{% endif %}>weekends</option>
                 </select>
 
                 <label for="location">Localisation:</label>
@@ -241,7 +243,7 @@
 
                         </div>
                         <div>
-                           
+                     
                         <div>
                             <form id="cancel-form" action="{% url 'cancel_reservation' babysitter.id %}" method="POST" style="display: inline;">
                                 {% csrf_token %}
@@ -269,8 +271,6 @@
             {% endif %}
         </div>
     </div>
-    <a href="{% url 'parent_dashboard' %}" >
-        <button>dashboard</button>
-    </a>
+   
 </body>
 </html>

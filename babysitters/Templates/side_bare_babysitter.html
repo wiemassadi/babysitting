@@ -10,34 +10,31 @@
                 <i class="fa fa-home"></i> Tableau de bord
             </a>
         </li>
-        <li>
-            <a href="{% url 'babysitter_profile' %}">
-                <i class="fa fa-user"></i> Mon profil
-            </a>
-        </li>
+        
         <li>
             <a href="{% url 'update_babysitter_profile' %}">
-                <i class="fa fa-edit"></i> Mettre à jour mon profil
+                <i class="fa fa-user"></i> Mon profil
             </a>
         </li>
 
         <!-- Réservations -->
         <li>
-            <a href="#">
+            <a href="{% url 'voir_reservations_babysitter' user.babysitter.id %}">
                 <i class="fa fa-calendar"></i> Mes réservations
             </a>
         </li>
 
         <!-- Notifications -->
         <li>
-            <a href="#">
+            <a href="{% url 'notifications_babysitter' %}">
                 <i class="fa fa-bell"></i> Notifications
                 <!-- Indicateur rouge pour les notifications non vues -->
-              
-                    <span class="badge"></span>
-                
+                <span class="badge">
+                    {{ unread_notifications_count_babysitter }}
+                </span>
             </a>
         </li>
+        
 
         <!-- Déconnexion -->
         <li>

@@ -104,7 +104,14 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             table {
-                width: 100%;
+                width: 90%;
+                margin: 0 auto;
+                margin-left: 20%; /* Décale le tableau vers la droite */
+                border-collapse: collapse;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+                background-color: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
             }
 
             h1 {
@@ -121,7 +128,7 @@
                 font-size: 0.95em;
             }
         }
-        
+
         /* Hover Animation for Table Rows */
         tr:hover {
             background-color: #f9e2e6;
@@ -171,7 +178,7 @@
                                 <button type="submit" name="action" value="reject" class="reject-btn">Refuser</button>
                             </form>
                         {% else %}
-                            <span>{{ reservation.get_status_display }}</span>
+                            <span class="status-{{ reservation.status }}">{{ reservation.get_status_display }}</span>
                         {% endif %}
                     </td>
                 </tr>

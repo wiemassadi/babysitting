@@ -204,13 +204,11 @@ def custom_logout(request):
     return redirect('home')
 
 def search_babysitters(request):
-    # Récupérer les filtres de recherche
     availability_filter = request.GET.get('availability', '')
     location_filter = request.GET.get('location', '')
     
     babysitters = Babysitter.objects.all()
     
-    # Appliquer les filtres de disponibilité et de localisation
     if availability_filter:
         babysitters = babysitters.filter(availability__icontains=availability_filter)
     
@@ -219,12 +217,18 @@ def search_babysitters(request):
     
     # Préparer le statut des réservations pour les utilisateurs authentifiés
     reservation_status = {}
-    parent_id = None  # Initialisation de parent_id
-
     if request.user.is_authenticated:
         try:
+            # Assurez-vous que l'utilisateur connecté est un Parent
             parent = Parent.objects.get(user=request.user)  # Récupère l'instance Parent associée à l'utilisateur
-            parent_id = parent.id  # Récupère l'ID du parent
+            
+            for babysitter in babysitters:
+                # Utilisation de l'instance Parent pour la requête de réservation
+                reservation_status[babysitter.id] = Reservation.objects.filter(
+                    parent=parent,  # Utiliser l'instance Parent obtenue
+                    babysitter=babysitter,
+                    status__in=['pending', 'confirmed']
+                ).exists()
         except Parent.DoesNotExist:
             # Si l'utilisateur connecté n'est pas un Parent, on ne fait rien ou on gère comme tu veux
             reservation_status = {}
@@ -234,19 +238,16 @@ def search_babysitters(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    # Passer le contexte nécessaire à la vue
     return render(request, 'search_babysitters.html', {
         'babysitters': page_obj,
         'availability_filter': availability_filter,
         'location_filter': location_filter,
         'reservation_status': reservation_status,
-        'parent_id': parent_id,  # Ajouter parent_id au contexte
         'has_previous': page_obj.has_previous(),
         'has_next': page_obj.has_next(),
         'previous_page_number': page_obj.previous_page_number() if page_obj.has_previous() else None,
         'next_page_number': page_obj.next_page_number() if page_obj.has_next() else None
     })
-
 def cancel_reservation(request, babysitter_id):
     babysitter = get_object_or_404(Babysitter, id=babysitter_id)
 
@@ -301,6 +302,7 @@ def create_reservation_for(request, babysitter_id):
                 user=babysitter.user,
                 message=f"Vous avez une nouvelle réservation de {parent.user.username} ({parent.user.first_name} {parent.user.last_name}).",
                 notification_type='reservation',
+                reservation=reservation,
             )
 
             messages.success(request, f"Réservation créée avec succès pour {babysitter.first_name} {babysitter.last_name}.")
@@ -342,51 +344,47 @@ def babysitter_detail(request, babysitter_id):
 
 @login_required
 def voir_reservations_babysitter(request, babysitter_id):
-    # Vérifier si le babysitter correspond à l'utilisateur connecté
     babysitter = get_object_or_404(Babysitter, id=babysitter_id, user=request.user)
 
-    if request.method == 'POST':
-        reservation_id = request.POST.get('reservation_id')
-        action = request.POST.get('action')
+    # Récupérer le reservation_id de l'URL ou du formulaire
+    reservation_id = request.GET.get('reservation_id') or request.POST.get('reservation_id')
 
-        # Récupérer la réservation concernée
+    if reservation_id:
         reservation = get_object_or_404(Reservation, id=reservation_id, babysitter=babysitter)
 
-        if action == 'accept':
-            reservation.status = 'confirmed'
-            reservation.save()
+        if request.method == 'POST':
+            action = request.POST.get('action')
 
-            # Créer une notification pour le parent
-            Notification.objects.create(
-                user=reservation.parent.user,  # Utilisateur lié au parent
-                message=f"Votre réservation avec {babysitter.first_name} {babysitter.last_name} a été acceptée.",
-                notification_type='reservation_accepted',
-            )
+            if action == 'accept':
+                reservation.status = 'confirmed'
+                reservation.save()
+                Notification.objects.create(
+                    user=reservation.parent.user,
+                    message=f"Votre réservation avec {babysitter.first_name} {babysitter.last_name} a été acceptée.",
+                    notification_type='reservation_accepted',
+                    reservation=reservation
+                )
+                messages.success(request, f"La réservation avec {reservation.parent.username} a été acceptée.")
 
-        elif action == 'reject':
-            reservation.status = 'cancelled'
-            reservation.save()
+            elif action == 'reject':
+                reservation.status = 'cancelled'
+                reservation.save()
+                Notification.objects.create(
+                    user=reservation.parent.user,
+                    message=f"Votre réservation avec {babysitter.first_name} {babysitter.last_name} a été rejetée.",
+                    notification_type='reservation_rejected',
+                    reservation=reservation
+                )
+                messages.error(request, f"La réservation avec {reservation.parent.username} a été rejetée.")
 
-            # Créer une notification pour le parent
-            Notification.objects.create(
-                user=reservation.parent.user,  # Utilisateur lié au parent
-                message=f"Votre réservation avec {babysitter.first_name} {babysitter.last_name} a été rejetée.",
-                notification_type='reservation_rejected',
-            )
-
-        return redirect('voir_reservations_babysitter', babysitter_id=babysitter.id)
-
-    # Afficher toutes les réservations
+    # Afficher la liste des réservations
     reservations = Reservation.objects.filter(babysitter=babysitter)
     return render(request, 'voir_reservations.html', {'reservations': reservations})
 
 @login_required
-def parent_reservations(request, parent_id):
-    # Récupérer le parent en fonction de l'ID passé dans l'URL
-    parent = get_object_or_404(Parent, id=parent_id)
-    
-    # Obtenir toutes les réservations du parent spécifié
-    reservations = Reservation.objects.filter(parent=parent).order_by('-date', '-start_time')
+def parent_reservations(request):
+    # Obtenir toutes les réservations du parent
+    reservations = Reservation.objects.filter(parent=request.user).order_by('-date', '-start_time')
 
     # Mettre à jour les réservations pour classer celles passées comme "passées"
     for reservation in reservations:
@@ -396,7 +394,7 @@ def parent_reservations(request, parent_id):
             reservation_datetime = datetime.strptime(reservation_datetime_str, "%Y-%m-%d %H:%M")
 
             # Vérifier si la réservation est dans le passé
-            if reservation_datetime < datetime.now():
+            if reservation_datetime < now():
                 if reservation.status != 'cancelled':
                     reservation.status = 'passed'  # Modifier le statut pour "passé"
                     reservation.save()
@@ -406,10 +404,10 @@ def parent_reservations(request, parent_id):
             continue
 
     context = {
-        'parent': parent,
         'reservations': reservations,
     }
     return render(request, 'parent_reservations.html', context)
+
 
 
 @login_required
@@ -440,48 +438,22 @@ def update_parent_profile(request):
 
 @login_required
 def notifications_parent(request):
-    # Récupérer l'objet Parent
-    try:
-        parent = Parent.objects.get(user=request.user)
-    except Parent.DoesNotExist:
-        parent = None
-
     # Récupérer les notifications non lues du parent
-    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    notifications = Notification.objects.filter(user=request.user, read=False).order_by('-created_at')
 
-    context = {
-        'parent': parent,
-        'notifications': notifications,
-    }
-    return render(request, 'notifications_parent.html', context)
+    # Marquer les notifications comme lues
+    notifications.update(read=True)
 
+    return render(request, 'notifications_parent.html', {'notifications': notifications})
 
-
-
-@login_required
 def notifications_babysitter(request):
-    # Récupérer les notifications non lues du babysitter connecté
-    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')  
-
+    babysitter = Babysitter.objects.get(user=request.user)
+    notifications = Notification.objects.filter(reservation__babysitter=babysitter).order_by('-created_at')
     return render(request, 'notifications_babysitter.html', {'notifications': notifications})
+
 
 @login_required
 def mark_notification_as_read(request, notification_id):
-    notification = Notification.objects.filter(id=notification_id, user=request.user).first()
-
-    if not notification:
-        messages.error(request, "Notification introuvable ou non autorisée.")
-        return redirect('notifications_parent' if hasattr(request.user, 'parent') else 'notifications_babysitter')
-
-    notification.read = True
-    notification.save()
-
-    if hasattr(request.user, 'parent'):
-        return redirect('notifications_parent')
-    elif hasattr(request.user, 'babysitter'):
-        return redirect('notifications_babysitter')
-
-    return redirect('home')
     # Récupérer la notification par son ID
     notification = get_object_or_404(Notification, id=notification_id, user=request.user)
 
@@ -489,11 +461,5 @@ def mark_notification_as_read(request, notification_id):
     notification.read = True
     notification.save()
 
-    # Vérifier si l'utilisateur est un parent ou un babysitter
-    if hasattr(request.user, 'parent'):  # Vérifie si l'utilisateur a un lien avec le modèle Parent
-        return redirect('notifications_parent')
-    elif hasattr(request.user, 'babysitter'):  # Vérifie si l'utilisateur a un lien avec le modèle Babysitter
-        return redirect('notifications_babysitter')
-
-    # Par défaut, rediriger vers la page d'accueil (au cas où l'utilisateur n'est ni parent ni babysitter)
-    return redirect('home')
+    # Rediriger vers la page des notifications
+    return redirect('notifications_babysitter')

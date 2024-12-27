@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('hourly_rate', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('bio', models.TextField()),
                 ('certifications', models.FileField(blank=True, null=True, upload_to='certifications/')),
-                ('availability', models.CharField(choices=[('full_time', 'Temps plein'), ('part_time', 'Temps partiel'), ('occasional', 'Occasionnel')], max_length=50)),
+                ('availability', models.CharField(choices=[('full_time', 'Temps plein'), ('part_time', 'Temps partiel'), ('weekends', 'weekends')], max_length=50)),
             ],
         ),
         migrations.CreateModel(

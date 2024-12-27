@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 class Parent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)  # Unicité de l'email pour le parent
@@ -53,13 +52,13 @@ class Babysitter(models.Model):
         return False
 
 class Reservation(models.Model):
-    parent = models.ForeignKey(User, related_name='reservations', on_delete=models.CASCADE)
+    parent = models.ForeignKey(Parent, related_name='reservations', on_delete=models.CASCADE)
     babysitter = models.ForeignKey(Babysitter, on_delete=models.CASCADE)
     date = models.DateField()
     start_time = models.TimeField()
     duration = models.PositiveIntegerField(help_text="Duration in minutes")
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=[('pending', 'En attente'), ('confirmed', 'Confirmée'), ('cancelled', 'Annulée')], default='pending')
+    status = models.CharField(max_length=20, choices=[('pending', 'En attente'), ('confirmed', 'Confirmée'), ('cancelled', 'Annulée'),('passed', 'Terminée'),], default='pending')
 
     def __str__(self):
         return f"Reservation from {self.parent} with {self.babysitter} on {self.date} at {self.start_time}"
@@ -69,3 +68,19 @@ class Reservation(models.Model):
         """Check if a parent has a reservation with the babysitter."""
         return Reservation.objects.filter(parent=parent, babysitter=babysitter, status__in=['pending', 'confirmed']).exists()
 
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('new_reservation', 'Nouvelle réservation'),
+        ('reservation_accepted', 'Réservation acceptée'),
+        ('reservation_rejected', 'Réservation rejetée'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Utilisateur recevant la notification
+    message = models.TextField()  # Le message de la notification
+    read = models.BooleanField(default=False)
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    created_at = models.DateTimeField(auto_now_add=True)  # Date de création de la notification
+    reservation = models.ForeignKey('Reservation', null=True, blank=True, on_delete=models.SET_NULL)  # Réservation liée
+
+    def __str__(self):
+        return f"{self.user.username} - {self.notification_type}"

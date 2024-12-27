@@ -5,7 +5,8 @@ from .views import (
     
     home, register_choice, register_parent, babysitter_register,search_babysitters,voir_reservations_babysitter,
     update_babysitter_profile,babysitter_profile,babysitter_detail,parent_reservations,update_parent_profile,
-    login_view, parent_dashboard, babysitter_dashboard,custom_logout,cancel_reservation,create_reservation_for
+    login_view, parent_dashboard, babysitter_dashboard,custom_logout,cancel_reservation,create_reservation_for,
+    notifications_parent,notifications_babysitter,mark_notification_as_read
 )
 
 urlpatterns = [
@@ -29,7 +30,10 @@ urlpatterns = [
     path('babysitter/profile/update/', update_babysitter_profile, name='update_babysitter_profile'),
     path('babysitter/<int:babysitter_id>/', babysitter_detail, name='babysitter_detail'),
     path('reservations/<int:babysitter_id>/', voir_reservations_babysitter, name='voir_reservations_babysitter'),
-    path('parent_reservations/', parent_reservations, name='parent_reservations'),
+    path('parent_reservations/<int:parent_id>/', parent_reservations, name='parent_reservations'),
     path('update-profile/', update_parent_profile, name='update_parent_profile'),
+    path('notifications/parent/', notifications_parent, name='notifications_parent'),
+    path('notifications/babysitter/', notifications_babysitter, name='notifications_babysitter'),
+    path('notifications/mark_as_read/<int:notification_id>/', mark_notification_as_read, name='mark_notification_as_read'),
 ]
 
